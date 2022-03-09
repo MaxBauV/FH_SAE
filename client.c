@@ -20,7 +20,7 @@ int main() {
 	
 	struct sockaddr_in	 servaddr;
 
-    int data[MEASURE_CNT] = {0};
+    long data[MEASURE_CNT] = {0};
 
     FILE *csv_fpt;
 
@@ -38,7 +38,7 @@ int main() {
 	// Filling server information
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(PORT);
-	servaddr.sin_addr.s_addr = INADDR_ANY;
+	servaddr.sin_addr.s_addr = IP_HEX;
 	
 	socklen_t len = 0;
     int n = 0;
