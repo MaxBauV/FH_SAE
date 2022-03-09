@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#include <sys/time.h>
+
 #define PORT	8080
 #define MAXLINE 1
 
@@ -17,6 +19,10 @@ int main() {
 	char buffer[MAXLINE];
 	char *msg = "c";
 	struct sockaddr_in	 servaddr;
+
+    // Time measurement stuff
+    struct timeval t1, t2;
+    int elapsedTime;
 
 	// Creating socket file descriptor
 	if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
@@ -36,9 +42,12 @@ int main() {
 	
     while(1)
     {
+        gettimeofday(&t1, NULL);
         sendto(sockfd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr));
         n = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *) &servaddr, &len);
-        printf("Server : %s\n", buffer);
+        gettimeofday(&t2, NULL);
+        elapsedTime = (t2.tv_usec - t1.tv_usec);
+        printf("elapsed time: %d\n", elapsedTime);
     }
 
 	close(sockfd);

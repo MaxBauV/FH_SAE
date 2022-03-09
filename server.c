@@ -46,7 +46,6 @@ int main() {
     for (int i = 0; i < 50000; i++)
     {
         n = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
-        printf("Client %d: %s\n", i, buffer);
         sendto(sockfd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len);
     }
 	
