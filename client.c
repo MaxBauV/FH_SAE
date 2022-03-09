@@ -53,16 +53,16 @@ int main() {
             printf("Client received[%d]: %s\n", i, buffer);
         #endif
         gettimeofday(&t2, NULL);
-        data[i] = (t2.tv_usec - t1.tv_usec);
+        data[i] = 1000000 * (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec);
     }
     close(sockfd);
 
     csv_fpt = fopen("Measurement.csv", "w+");
 
-    fprintf(csv_fpt,"Time in µs\n");
+    fprintf(csv_fpt,"time\n");
     for (int i = 0; i < MEASURE_CNT; i++)
     {
-        fprintf(csv_fpt, "%d\n", data[i]);
+        fprintf(csv_fpt, "%ld\n", data[i]);
     }
     fclose(csv_fpt);
 
