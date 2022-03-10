@@ -20,6 +20,16 @@ See common.h for some settings
 
 Do not compile with -Wall flag because of "unused variable warning" - sry to lazy to fix
 
+##Network/CPU load
+- Network load done with iperf
+-   Server: iperf -s
+-   Client: iperf -c IP_ADDR -d -t 60000
+-     Full-Duplex and long enough to complete the Measurement-loop
+-   270 Mbits/sec throughput without the Measuremtn-loop running
+-   264 Mbits/sec througput with Measurement-loop running
+- CPU load done with stress
+-   stress -c 16 -i 4 -m 1
+
 ## Usage:
 - Start server
 - Start client
