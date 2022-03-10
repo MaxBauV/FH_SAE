@@ -20,7 +20,11 @@ int main() {
 	
 	struct sockaddr_in	 servaddr;
 
-    long data[MEASURE_CNT] = {0};
+    #if DEBUG
+        long debug_data[3][MEASURE_CNT] = {0};
+    #else
+        long data[MEASURE_CNT] = {0};
+    #endif
 
     FILE *csv_fpt;
 
@@ -38,7 +42,7 @@ int main() {
 	// Filling server information
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(PORT);
-	servaddr.sin_addr.s_addr = IP_HEX;
+	servaddr.sin_addr.s_addr = INADDR_ANY; // IP_HEX;
 	
 	socklen_t len = 0;
     int n = 0;
@@ -53,17 +57,31 @@ int main() {
             printf("Client received[%d]: %s\n", i, buffer);
         #endif
         gettimeofday(&t2, NULL);
-        data[i] = 1000000 * (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec);
+        #if DEBUG
+            debug_data[0][i] = 1000000 * t1.tv_sec + t1.tv_usec;
+            debug_data[1][i] = 1000000 * t2.tv_sec + t2.tv_usec;
+            debug_data[2][i] = 1000000 * (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec);
+        #else
+            data[i] = 1000000 * (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec);
+        #endif
     }
     close(sockfd);
 
     csv_fpt = fopen("Measurement.csv", "w+");
 
-    fprintf(csv_fpt,"time\n");
-    for (int i = 0; i < MEASURE_CNT; i++)
-    {
-        fprintf(csv_fpt, "%ld\n", data[i]);
-    }
+    #if DEBUG
+        fprintf(csv_fpt,"t1, t2\n");
+        for (int i = 0; i < MEASURE_CNT; i++)
+        {
+            fprintf(csv_fpt, "%ld, %ld, %ld\n", debug_data[0][i], debug_data[1][i], debug_data[2][i]);
+        }
+    #else
+        fprintf(csv_fpt,"time\n");
+        for (int i = 0; i < MEASURE_CNT; i++)
+        {
+            fprintf(csv_fpt, "%ld\n", data[i]);
+        }
+    #endif
     fclose(csv_fpt);
 
 	return 0;
